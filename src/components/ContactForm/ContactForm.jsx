@@ -1,60 +1,53 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+const ContactForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const formKey = { name: setName, number: setNumber };
 
-  onChangeHandler = e => {
+  const onChangeHandler = e => {
     const { name, value } = e.currentTarget;
-    this.setState({
-      [name]: value,
-    });
+    formKey[name](_ => value);
   };
 
-  onSubmitHandler = e => {
+  const onSubmitHandler = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
+    onSubmit({ name, number });
+    reset();
   };
 
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmitHandler} className={css['form-input']}>
-        <input
-          type="text"
-          name="name"
-          value={this.state.name}
-          onChange={this.onChangeHandler}
-          placeholder="Name"
-          id={nanoid()}
-          required
-        />
-        <input
-          type="tel"
-          name="number"
-          value={this.state.number}
-          onChange={this.onChangeHandler}
-          placeholder="Phone"
-          id={nanoid()}
-          required
-        />
-        <button type="submit" className={css['form-button']}>
-          Add contact
-        </button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={onSubmitHandler} className={css['form-input']}>
+      <input
+        type="text"
+        name="name"
+        value={name}
+        onChange={onChangeHandler}
+        placeholder="Name"
+        id={nanoid()}
+        required
+      />
+      <input
+        type="tel"
+        name="number"
+        value={number}
+        onChange={onChangeHandler}
+        placeholder="Phone"
+        id={nanoid()}
+        required
+      />
+      <button type="submit" className={css['form-button']}>
+        Add contact
+      </button>
+    </form>
+  );
+};
 
 export default ContactForm;
